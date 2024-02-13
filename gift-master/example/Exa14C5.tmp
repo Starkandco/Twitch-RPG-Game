@@ -1,0 +1,159 @@
+extends Control
+
+# Your client id. You can share this publicly. Default is my own client_id.
+# Please do not ship your project with my client_id, but feel free to test with it.
+# Visit https://dev.twitch.tv/console/apps/create to create a new application.
+# You can then find your client id at the bottom of the application console.
+# DO NOT SHARE THE CLIENT SECRET. If you do, regenerate it.
+@export var client_id : String = "m15sgvbjxqqgxi4yqoxkw1ny4mg3hv"
+# The name of the channel we want to connect to.
+@export var channel : String
+# The username of the bot account.
+@export var username : String
+
+var id : TwitchIDConnection
+var api : TwitchAPIConnection
+var irc : TwitchIRCConnection
+
+var cmd_handler : GIFTCommandHandler = GIFTCommandHandler.new()
+
+var iconloader : TwitchIconDownloader
+
+var parties = {}
+var players = []
+
+func _ready() -> void:
+	# We will login using the Implicit Grant Flow, which only requires a client_id.
+	# Alternatively, you can use the Authorization Code Grant Flow or the Client Credentials Grant Flow.
+	# Note that the Client Credentials Grant Flow will only return an AppAccessToken, which can not be used
+	# for the majority of the Twitch API or to join a chat room.
+	var auth : ImplicitGrantFlow = ImplicitGrantFlow.new()
+	# For the auth to work, we need to poll it regularly.
+	get_tree().process_frame.connect(auth.poll) # You can also use a timer if you don't want to poll on every frame.
+
+	# Next, we actually get our token to authenticate. We want to be able to read and write messages,
+	# so we request the required scopes. See https://dev.twitch.tv/docs/authentication/scopes/#twitch-access-token-scopes
+	var token : UserAccessToken = await(auth.login(client_id, ["chat:read", "chat:edit"]))
+	if (token == null):
+		# Authentication failed. Abort.
+		return
+
+	# Store the token in the ID connection, create all other connections.
+	id = TwitchIDConnection.new(token)
+	irc = TwitchIRCConnection.new(id)
+	api = TwitchAPIConnection.new(id)
+	iconloader = TwitchIconDownloader.new(api)
+	# For everything to work, the id connection has to be polled regularly.
+	get_tree().process_frame.connect(id.poll)
+
+	# Connect to the Twitch chat.
+	if(!await(irc.connect_to_irc(username))):
+		# Authentication failed. Abort.
+		return
+	# Request the capabilities. By default only twitch.tv/commands and twitch.tv/tags are used.
+	# Refer to https://dev.twitch.tv/docs/irc/capabilities/ for all available capapbilities.
+	irc.request_capabilities()
+	# Join the channel specified in the exported 'channel' variable.
+	irc.join_channel(channel)
+
+	cmd_handler.add_command("join", join)
+	cmd_handler.add_command("leave", leave)
+	
+	irc.chat_message.connect(cmd_handler.handle_command)
+	irc.whisper_message.connect(cmd_handler.handle_command.bind(true))
+
+	irc.chat_message.connect(custom_handle_command)
+	irc.whisper_message.connect(custom_handle_command)
+
+func custom_handle_command(sender_data, message):
+	if !players.has(sender_data.user): return
+	var split_message = message.to_lower().rsplit(" ", false, 3)
+	var callable_str = "NA"
+	if split_message.size() >= 2:
+		callable_str = split_message[0] + "_" + split_message[1]
+	else:
+		callable_str = split_message[0]
+	var user = sender_data.user
+	var new_callable = Callable(self, callable_str)
+	if callable_str in %WhiteList.white_list["GIFT"]:
+		if new_callable.is_valid():
+			if split_message.size() == 3:
+				new_callable.call(user, split_message[2])
+			else:
+				new_callable.call(user)
+	else:
+		var player = get_player_entity(user)
+		if !player: return
+		new_callable = Callable(player, callable_str)
+		
+		if callable_str in %WhiteList.white_list["Player"]:
+			if new_callable.is_valid():
+				if split_message.size() == 3:
+					new_callable.call(split_message[2])
+				else:
+					new_callable.call()
+		else:
+			player.say(message)
+
+func join(cmd_info: CommandInfo) -> void:
+	var user = cmd_info.sender_data.user
+	if !players.has(user):
+		players.append(user)
+
+func leave(cmd_info: CommandInfo) -> void:
+	var user = cmd_info.sender_data.user
+	if players.has(user):
+		if parties.has(user):
+			var player = get_player_entity(user)
+			if player:
+				player.get_parent().get_parent().player_leave(user)
+			parties.erase(user)
+		else:
+			var player = get_player_entity(user)
+			if player:
+				player.queue_free()
+	players.erase(user)
+
+func join_party(user, second_arg) -> void:
+	if players.has(user) and !get_player_entity(user):
+		var leader_name = second_arg[0].to_lower()
+		if parties.has(leader_name):
+			parties[leader_name]["member" + str(parties[leader_name].size())] = user
+
+func start_party(user) -> void:
+	if players.has(user) and !parties.has(user):
+		for party in parties:
+			for member in party:
+				if party[member] == user:
+					return
+		parties[user] = {"Leader": user, "Started": false}
+	
+func change_colour(user, arg) -> void:
+	if players.has(user):
+		var player = get_player_entity(user)
+		if player:
+			var new_colour = Color(arg)
+			if new_colour is Color:
+				player.set_colour(arg)
+
+func new_save(user) -> void:
+	if players.has(user) and parties.has(user):
+		parties[user] = {"Leader": [user, true]}
+	elif players.has(user):
+		for party in parties:
+			if !party["Started"]:
+				for member in party.keys():
+					if party[member] == user:
+						party[member] = [user, true]
+
+func start_adventure(user) -> void:
+	if players.has(user) and parties.has(user):
+		if !parties[user]["Started"]:
+			parties[user]["Started"] = true
+			get_parent().get_node("SubViewportContainer/OverallGameSubViewport/MarginContainer/ChatterGridContainer").party_start(parties[user])
+
+func get_player_entity(internal) -> Player:
+	for player in get_tree().get_nodes_in_group("Player"):
+		if player.user == internal:
+			return player
+	return null

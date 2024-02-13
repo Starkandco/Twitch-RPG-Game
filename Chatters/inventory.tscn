@@ -1,0 +1,58 @@
+[gd_scene load_steps=7 format=3 uid="uid://bn6i36gi0yesj"]
+
+[ext_resource type="Script" path="res://Chatters/inventory.gd" id="1_yuxkg"]
+[ext_resource type="Texture2D" uid="uid://cqsnvaong5u2n" path="res://Assets/potion.png" id="2_0psk5"]
+[ext_resource type="Texture2D" uid="uid://ddal2l1bvas3f" path="res://Assets/potion2.png" id="3_j3r1u"]
+[ext_resource type="Texture2D" uid="uid://dsberpvg0bibu" path="res://Assets/potion3.png" id="4_gq1d8"]
+[ext_resource type="Texture2D" uid="uid://bqjewns17bsj1" path="res://Assets/potion4.png" id="5_orm2v"]
+
+[sub_resource type="AnimatedTexture" id="AnimatedTexture_rncrj"]
+frames = 4
+frame_0/texture = ExtResource("2_0psk5")
+frame_1/texture = ExtResource("3_j3r1u")
+frame_1/duration = 0.2
+frame_2/texture = ExtResource("4_gq1d8")
+frame_2/duration = 0.2
+frame_3/texture = ExtResource("5_orm2v")
+frame_3/duration = 0.2
+
+[node name="Inventory" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_yuxkg")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Potions" type="HBoxContainer" parent="MarginContainer/GridContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Label" type="Label" parent="MarginContainer/GridContainer/Potions"]
+layout_mode = 2
+text = "Potions:"
+
+[node name="Label2" type="Label" parent="MarginContainer/GridContainer/Potions"]
+layout_mode = 2
+text = "1"
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/GridContainer/Potions"]
+layout_mode = 2
+texture = SubResource("AnimatedTexture_rncrj")
+expand_mode = 3

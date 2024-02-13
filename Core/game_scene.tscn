@@ -1,0 +1,50 @@
+[gd_scene load_steps=8 format=3 uid="uid://ssaxn4lspnf7"]
+
+[ext_resource type="PackedScene" uid="uid://b658yr4w3m4xv" path="res://Chatters/Chatter/player.tscn" id="1_df7kw"]
+[ext_resource type="Script" path="res://Core/game_scene.gd" id="1_dogsj"]
+[ext_resource type="PackedScene" uid="uid://c4j2b6bso4f0g" path="res://Items/potion.tscn" id="2_ckwac"]
+[ext_resource type="PackedScene" uid="uid://bx5pvw4fvvku5" path="res://Units/ally.tscn" id="3_dtrb6"]
+[ext_resource type="Texture2D" uid="uid://dceq7vs1njs55" path="res://Assets/Background.png" id="5_2sq3h"]
+[ext_resource type="PackedScene" uid="uid://r2ff2b52vout" path="res://Units/enemy.tscn" id="5_bk34h"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_00ev0"]
+size = Vector2(38400, 20)
+
+[node name="GameScene" type="Node2D"]
+script = ExtResource("1_dogsj")
+player_scene = ExtResource("1_df7kw")
+
+[node name="Players" type="Node2D" parent="." groups=["Players"]]
+position = Vector2(0, 1006)
+
+[node name="Obstacles" type="Node2D" parent="."]
+position = Vector2(0, 1006)
+
+[node name="Ally" parent="Obstacles" instance=ExtResource("3_dtrb6")]
+position = Vector2(1877, 0)
+
+[node name="Potion" parent="Obstacles" instance=ExtResource("2_ckwac")]
+position = Vector2(900, 0)
+
+[node name="Enemy" parent="Obstacles" instance=ExtResource("5_bk34h")]
+position = Vector2(2200, 0)
+
+[node name="Other" type="Node2D" parent="."]
+
+[node name="Ground" type="StaticBody2D" parent="Other"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Other/Ground"]
+position = Vector2(19200, 1080)
+shape = SubResource("RectangleShape2D_00ev0")
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_mirroring = Vector2(1920, 0)
+
+[node name="TextureRect" type="TextureRect" parent="ParallaxBackground/ParallaxLayer"]
+custom_minimum_size = Vector2(1920, 1080)
+texture = ExtResource("5_2sq3h")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(-150, 540)
