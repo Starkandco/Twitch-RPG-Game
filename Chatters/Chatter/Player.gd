@@ -33,11 +33,11 @@ signal interaction_started
 signal turn_over
 
 func _ready():
-	$Name.text = user
 	fight_UI.fight_started.connect(_toggle_combat)
 	fight_UI.fight_over.connect(_toggle_combat)
 	inventory.load_potions(potions)
 	turn_over.connect(_hide_name)
+	$Name.text = user
 	if name != "Player":
 		$Camera2D.enabled = false
 	else:
@@ -126,6 +126,7 @@ func _start():
 func _return_dict_for_save():
 	var save_dict = {
 	"filename" : get_scene_file_path(),
+	"user" : user,
 	"attack" : strength,
 	"defense" : defense,
 	"health" : health,
@@ -190,7 +191,7 @@ func thunder():
 		turn_over.emit()
 
 func _can_use_magic(cost):
-	return mana - cost > 0
+	return mana - cost >= 0
 
 func _decrease_mana(value):
 	mana -= value

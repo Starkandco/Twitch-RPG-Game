@@ -71,6 +71,8 @@ func decide(players):
 		var move = select_move()
 		move.call(players)
 	else:
+		if shocked:
+			shocked = false
 		turn_over.emit()
 
 func turn_start_damage():

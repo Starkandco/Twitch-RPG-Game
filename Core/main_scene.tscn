@@ -70,12 +70,22 @@ theme_override_constants/separation = 30
 [node name="Label" type="Label" parent="UI/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(280, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 22
 text = "!join to join - Once joined, commands no longer require \"!\"
+
+!leave - quit out of any party and the game entirely
 
 start party - start a new party by yourself in the queue
 
-join party <user> - join the user's party e.g. \"join party starkandco\" ;)"
+join party <user> - e.g. \"join party starkandco\" ;)
+
+start adventure - only allowed by party leaders
+
+new save - reset save file for your character (Are you sure..?) 
+
+quit party - leave the party you're in (before game start)
+
+All other commands as appear in game."
 autowrap_mode = 2
 
 [node name="PartyList" type="VBoxContainer" parent="UI/MarginContainer/VBoxContainer"]
