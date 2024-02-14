@@ -11,7 +11,7 @@ func party_start(party):
 			if key == "Leader":
 				new_game.get_child(0).get_child(1).player_join(party[key])
 		for key in party.keys():
-			if !key in ["Leader", "Started", "UI"]:
+			if key.begins_with("member"):
 				new_game.get_child(0).get_child(1).player_join(party[key])
 
 func party_end(index):

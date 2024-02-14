@@ -34,7 +34,7 @@ bg_color = Color(0.356863, 0.698039, 0, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aouop"]
 bg_color = Color(0.184314, 0.611765, 1, 1)
 
-[sub_resource type="Shader" id="Shader_rtdmp"]
+[sub_resource type="Shader" id="Shader_coj4y"]
 resource_local_to_scene = true
 code = "shader_type canvas_item;
 
@@ -99,7 +99,7 @@ void fragment() {
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_tejnm"]
 resource_local_to_scene = true
-shader = SubResource("Shader_rtdmp")
+shader = SubResource("Shader_coj4y")
 shader_parameter/top_left = null
 shader_parameter/top_right = null
 shader_parameter/bottom_left = null
@@ -161,6 +161,7 @@ theme_override_constants/separation = 20
 
 [node name="Attacks" type="Label" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 20
 text = "!Slice
 !Shove
 !Impale
@@ -168,6 +169,7 @@ text = "!Slice
 
 [node name="Magic" type="Label" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 20
 text = "!Fire
 !Ice
 !Thunder
@@ -175,6 +177,7 @@ text = "!Fire
 
 [node name="Misc" type="Label" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 20
 text = "!Item <Name>
 !Defend
 !Run
@@ -217,6 +220,7 @@ expand_mode = 1
 
 [node name="BleedCounter" type="Label" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/Debuffs/HBoxContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 20
 text = "0"
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/Debuffs"]
@@ -230,6 +234,7 @@ expand_mode = 1
 
 [node name="BurnCounter" type="Label" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/Debuffs/HBoxContainer2"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 20
 text = "0"
 
 [node name="Control" type="Control" parent="ChatterGameSubViewport/GameUI/VBoxContainer"]

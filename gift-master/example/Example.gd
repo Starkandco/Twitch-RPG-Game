@@ -58,15 +58,15 @@ func _ready() -> void:
 	irc.join_channel(channel)
 
 	cmd_handler.add_command("join", _join)
-	cmd_handler.add_command("leave", leave)
+	cmd_handler.add_command("leave", _leave)
 	
 	irc.chat_message.connect(cmd_handler.handle_command)
 	irc.whisper_message.connect(cmd_handler.handle_command.bind(true))
 
-	irc.chat_message.connect(custom_handle_command)
-	irc.whisper_message.connect(custom_handle_command)
+	irc.chat_message.connect(_custom_handle_command)
+	irc.whisper_message.connect(_custom_handle_command)
 
-func custom_handle_command(sender_data, message):
+func _custom_handle_command(sender_data, message):
 	var user = sender_data.user
 	#If this is the first message for the user
 	if !chatters.has(user):
@@ -96,6 +96,8 @@ func custom_handle_command(sender_data, message):
 	var params = []
 	var count = 0
 	for part in split_message:
+		if count == 0 and part.begins_with("_"):
+			return
 		count += 1
 		if collect_params:
 			params.append(part)
@@ -111,11 +113,11 @@ func custom_handle_command(sender_data, message):
 			callable_str = "NA"
 	if callable_str in %WhiteList.whitelist_names["GIFT"]:
 		params.insert(0, user)
-		if params.size() == %WhiteList.whitelist_params["GIFT"][%WhiteList.whitelist_names["GIFT"].find(callable_str)]:
+		if params.size() >= %WhiteList.whitelist_params["GIFT"][%WhiteList.whitelist_names["GIFT"].find(callable_str)][0] and params.size() <= %WhiteList.whitelist_params["GIFT"][%WhiteList.whitelist_names["GIFT"].find(callable_str)][1]:
 			_check_params_and_call(params, new_callable)
 	else:
 		callable_str = ""
-		var player = get_player_entity(user)
+		var player = _get_player_entity(user)
 		if !player: return
 		for part in split_message:
 			count += 1
@@ -133,7 +135,7 @@ func custom_handle_command(sender_data, message):
 				callable_str = "NA"
 		
 		if callable_str in %WhiteList.whitelist_names["Player"]:
-			if params.size() == %WhiteList.whitelist_params["Player"][%WhiteList.whitelist_names["Player"].find(callable_str)]:
+			if params.size() >= %WhiteList.whitelist_params["Player"][%WhiteList.whitelist_names["Player"].find(callable_str)][0] and params.size() <= %WhiteList.whitelist_params["Player"][%WhiteList.whitelist_names["Player"].find(callable_str)][1]:
 				_check_params_and_call(params, new_callable)
 		else:
 			player._say(message)
@@ -148,17 +150,21 @@ func _check_params_and_call(params, new_callable):
 			new_callable.call(params[0], params[1])
 		3:
 			new_callable.call(params[0], params[1], params[2])
+		4:
+			new_callable.call(params[0], params[1], params[2], params[3])
+		5:
+			new_callable.call(params[0], params[1], params[2], params[3], params[4])
 
 func _join(cmd_info: CommandInfo) -> void:
 	var user = cmd_info.sender_data.user
 	if !players.has(user):
 		players.append(user)
 
-func leave(cmd_info: CommandInfo) -> void:
+func _leave(cmd_info: CommandInfo) -> void:
 	var user = cmd_info.sender_data.user
 	if players.has(user):
 		if parties.has(user):
-			var player = get_player_entity(user)
+			var player = _get_player_entity(user)
 			if player:
 				player.get_parent().get_parent().player_leave(user)
 			parties.erase(user)
@@ -167,27 +173,57 @@ func leave(cmd_info: CommandInfo) -> void:
 				for member in parties[party]:
 					if str(parties[party][member]) == user:
 						parties[party].erase(member)
-						parties[party]["UI"].get_child(1).text = str(parties[party]["UI"].get_child(1).text.split("/")[0].to_int() - 1) + " / 6"
-			var player = get_player_entity(user)
+						parties[party]["Members"] -= 1
+						parties[party]["UI"].get_child(1).text = str(parties[party]["Members"]) + " / 6"
+						parties[party] = _sort_party(parties[party])
+			var player = _get_player_entity(user)
 			if player:
 				player.get_parent().get_parent().player_leave(user)
 	players.erase(user)
 
 func join_party(user, second_arg) -> void:
-	if players.has(user) and !get_player_entity(user):
+	if players.has(user) and !_get_player_entity(user):
 		var leader_name = second_arg.to_lower()
-		if parties.has(leader_name):
-			parties[leader_name]["member" + str(parties[leader_name].size())] = user
-			parties[leader_name]["UI"].get_child(1).text = str(parties[leader_name]["UI"].get_child(1).text.split("/")[0].to_int() + 1) + " / 6"
+		if parties.has(leader_name) and parties[leader_name]["Members"] < 5:
+			parties[leader_name]["member" + str(parties[leader_name]["Members"])] = user
+			parties[leader_name]["Members"] += 1
+			parties[leader_name]["UI"].get_child(1).text = str(parties[leader_name]["Members"]) + " / 6"
+
+func _sort_party(party):
+	var members = [false, false, false, false, false]
+	for member in range(party["Members"]):
+		if party.has("member" + str(member + 1)):
+			members[member] = true
+	for x in range(5):
+		if !members[x] and x < 4 and members[x + 1]:
+			party["member" + str(x)] = party["member" + str(x + 1)]
+			party.erase("member" + str(x + 1))
+			members[x + 1] = false
+		elif !members[x] and x < 3 and members[x + 2]:
+			party["member" + str(x)] = party["member" + str(x + 2)]
+			party.erase("member" + str(x + 2))
+			members[x + 2] = false
+		elif !members[x] and x < 2 and members[x + 3]:
+			party["member" + str(x)] = party["member" + str(x + 3)]
+			party.erase("member" + str(x + 3))
+			members[x + 3] = false
+		elif !members[x] and x < 1 and members[x + 4]:
+			party["member" + str(x)] = party["member" + str(x + 4)]
+			party.erase("member" + str(x + 4))
+			members[x + 4] = false
+	return party
+
 
 func quit_party(user) -> void:
-	if !parties.has(user) and players.has(user) and !get_player_entity(user):
+	if !parties.has(user) and players.has(user) and !_get_player_entity(user):
 		var found = false
 		for party in parties:
 			for member in parties[party]:
 				if str(parties[party][member]) == user:
 					parties[party].erase(member)
-					parties[party]["UI"].get_child(1).text = str(parties[party]["UI"].get_child(1).text.split("/")[0].to_int() - 1) + " / 6"
+					parties[party]["Members"] -= 1
+					parties[party] = _sort_party(parties[party])
+					parties[party]["UI"].get_child(1).text = str(parties[party]["Members"]) + " / 6"
 					return
 
 func start_party(user) -> void:
@@ -196,7 +232,7 @@ func start_party(user) -> void:
 			for member in parties[party]:
 				if str(parties[party][member]) == user:
 					return
-		parties[user] = {"Leader": user, "Started": false}
+		parties[user] = {"Leader": user, "Started": false, "Members": 1}
 		var hbox = HBoxContainer.new()
 		var leader = Label.new()
 		var count = Label.new()
@@ -212,11 +248,25 @@ func start_party(user) -> void:
 	
 func change_colour(user, arg) -> void:
 	if players.has(user):
-		var player = get_player_entity(user)
+		var player = _get_player_entity(user)
 		if player:
 			var new_colour = Color(arg)
 			if new_colour != Color():
 				player._set_colour(arg)
+
+func change_ui(user, arg0 = Color.VIOLET, arg1 = Color.YELLOW, arg2 = Color.DARK_RED, arg3 = Color.CADET_BLUE) -> void:
+	if players.has(user):
+		var player = _get_player_entity(user)
+		if player:
+			var new_a = Color(arg0)
+			var new_b = Color(arg1)
+			var new_c = Color(arg2)
+			var new_d = Color(arg3)
+			if new_a != Color() or new_b != Color() or new_c != Color() or new_d != Color():
+				if parties.has(user):
+					player._change_UI(arg0, arg1, arg2, arg3)
+				else:
+					player._update_colours(arg0, arg1, arg2, arg3)
 
 func new_save(user) -> void:
 	if not FileAccess.file_exists("res://data/"+user+".save"):
@@ -228,10 +278,12 @@ func start_adventure(user) -> void:
 	if players.has(user) and parties.has(user):
 		if !parties[user]["Started"]:
 			parties[user]["Started"] = true
-			get_parent().get_node("SubViewportContainer/OverallGameSubViewport/MarginContainer/ChatterGridContainer").party_start(parties[user])
 			parties[user]["UI"].queue_free()
+			parties[user].erase("UI")
+			parties[user].erase("Members")
+			get_parent().get_node("SubViewportContainer/OverallGameSubViewport/MarginContainer/ChatterGridContainer").party_start(parties[user])
 
-func get_player_entity(internal) -> Player:
+func _get_player_entity(internal) -> Player:
 	for player in get_tree().get_nodes_in_group("Player"):
 		if player.user == internal:
 			return player

@@ -14,14 +14,17 @@ func _ready():
 		var code_line: String = gift_script.get_line()
 		if code_line.contains("func") and code_line.contains("user"):
 			var function_name = code_line.split(" ")[1].split("(")[0]
-			var params
+			var min_params
+			var max_params
 			if code_line.contains("()"):
-				params = 0
+				max_params = 0
+				min_params = 0
 			else:
-				params = code_line.split(" ")[1].split(",").size()
+				max_params = code_line.split(" ", true, 1)[1].split(",").size()
+				min_params = max_params - (code_line.split(" ", true, 1)[1].split("=").size() - 1)
 			if function_name.begins_with("_"): continue
 			whitelist_names["GIFT"].append(function_name)
-			whitelist_params["GIFT"].append(params)
+			whitelist_params["GIFT"].append([min_params, max_params])
 	
 	if not FileAccess.file_exists(player_script_path):
 		return # Error! We don't have a save to load.
@@ -31,11 +34,14 @@ func _ready():
 		var code_line: String = player_script.get_line()
 		if code_line.contains("func"):
 			var function_name = code_line.split(" ")[1].split("(")[0]
-			var params
+			var min_params
+			var max_params
 			if code_line.contains("()"):
-				params = 0
+				max_params = 0
+				min_params = 0
 			else:
-				params = code_line.split(" ")[1].split(",").size() 
+				max_params = code_line.split(" ", true, 1)[1].split(",").size()
+				min_params = max_params - (code_line.split(" ", true, 1)[1].split("=").size() - 1)
 			if  function_name.begins_with("_"): continue
 			whitelist_names["Player"].append(function_name)
-			whitelist_params["Player"].append(params)
+			whitelist_params["Player"].append([min_params, max_params])

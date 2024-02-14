@@ -35,7 +35,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/margin_left = 50
 theme_override_constants/margin_top = 50
-theme_override_constants/margin_right = 300
+theme_override_constants/margin_right = 400
 theme_override_constants/margin_bottom = 50
 
 [node name="ChatterGridContainer" type="GridContainer" parent="SubViewportContainer/OverallGameSubViewport/MarginContainer"]
@@ -50,7 +50,7 @@ script = ExtResource("4_ibk1w")
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="MarginContainer" type="MarginContainer" parent="UI"]
-custom_minimum_size = Vector2(300, 0)
+custom_minimum_size = Vector2(400, 0)
 anchors_preset = 11
 anchor_left = 1.0
 anchor_right = 1.0
@@ -65,12 +65,12 @@ theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 30
+theme_override_constants/separation = 10
 
 [node name="Label" type="Label" parent="UI/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(280, 0)
+custom_minimum_size = Vector2(380, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 18
 text = "!join to join - Once joined, commands no longer require \"!\"
 
 !leave - quit out of any party and the game entirely
@@ -81,11 +81,17 @@ join party <user> - e.g. \"join party starkandco\" ;)
 
 start adventure - only allowed by party leaders
 
+change colour <colour name/hex e.g. \"123456\"> - Check Godot's documentation on Color for colour keywords 
+
+change UI <up to 4 colours (all optional)> - Top left clockwise. Only applies to your parties. See above.
+
 new save - reset save file for your character (Are you sure..?) 
 
 quit party - leave the party you're in (before game start)
 
-All other commands as appear in game."
+All other commands as appear in game.
+
+Joinable parties:"
 autowrap_mode = 2
 
 [node name="PartyList" type="VBoxContainer" parent="UI/MarginContainer/VBoxContainer"]
@@ -94,59 +100,44 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="Debug" type="Window" parent="."]
-position = Vector2i(50, 50)
+position = Vector2i(933, 50)
 size = Vector2i(300, 200)
-visible = false
 script = ExtResource("3_ejc2y")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Debug"]
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 300.0
+offset_bottom = 171.0
 
 [node name="Button" type="Button" parent="Debug/VBoxContainer"]
 layout_mode = 2
-text = "Add party"
+text = "Join"
 
 [node name="Button2" type="Button" parent="Debug/VBoxContainer"]
 layout_mode = 2
-text = "Add player"
+text = "Start party"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Debug/VBoxContainer"]
+[node name="Button3" type="Button" parent="Debug/VBoxContainer"]
 layout_mode = 2
+text = "Start adventure"
 
-[node name="Label" type="Label" parent="Debug/VBoxContainer/HBoxContainer"]
+[node name="Button4" type="Button" parent="Debug/VBoxContainer"]
 layout_mode = 2
-text = "!LeaderQuit"
-
-[node name="LineEdit" type="LineEdit" parent="Debug/VBoxContainer/HBoxContainer"]
-layout_mode = 2
+text = "Leave"
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Debug/VBoxContainer"]
 layout_mode = 2
 
 [node name="Label" type="Label" parent="Debug/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
-text = "!Say \"\""
+text = "chat"
 
 [node name="LineEdit" type="LineEdit" parent="Debug/VBoxContainer/HBoxContainer2"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-
-[node name="HBoxContainer3" type="HBoxContainer" parent="Debug/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Debug/VBoxContainer/HBoxContainer3"]
-layout_mode = 2
-text = "!Skill \"\"
-"
-
-[node name="LineEdit" type="LineEdit" parent="Debug/VBoxContainer/HBoxContainer3"]
-custom_minimum_size = Vector2(150, 0)
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 
 [connection signal="close_requested" from="Debug" to="Debug" method="_on_close_requested"]
 [connection signal="pressed" from="Debug/VBoxContainer/Button" to="Debug" method="_on_button_pressed"]
 [connection signal="pressed" from="Debug/VBoxContainer/Button2" to="Debug" method="_on_button_2_pressed"]
-[connection signal="text_submitted" from="Debug/VBoxContainer/HBoxContainer/LineEdit" to="Debug" method="_on_line_edit_text_submitted"]
+[connection signal="pressed" from="Debug/VBoxContainer/Button3" to="Debug" method="_on_button_3_pressed"]
+[connection signal="pressed" from="Debug/VBoxContainer/Button4" to="Debug" method="_on_button_4_pressed"]
 [connection signal="text_submitted" from="Debug/VBoxContainer/HBoxContainer2/LineEdit" to="Debug" method="_on_line_edit_say_text_submitted"]
-[connection signal="text_submitted" from="Debug/VBoxContainer/HBoxContainer3/LineEdit" to="Debug" method="_on_line_edit_2_text_submitted"]

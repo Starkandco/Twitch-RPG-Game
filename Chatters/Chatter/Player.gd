@@ -29,6 +29,11 @@ var potions = 1
 var current_target
 var skills = {"Attacks": ["Slice", "Shove", "Impale"], "Magic": ["Fire", "Ice", "Thunder"]}
 
+var UI_a = Color.VIOLET
+var UI_b = Color.YELLOW
+var UI_c = Color.CADET_BLUE
+var UI_d = Color.DARK_RED
+
 signal interaction_started
 signal turn_over
 
@@ -37,6 +42,7 @@ func _ready():
 	fight_UI.fight_over.connect(_toggle_combat)
 	inventory.load_potions(potions)
 	turn_over.connect(_hide_name)
+	_change_UI(UI_a, UI_b, UI_c, UI_d)
 	$Name.text = user
 	if name != "Player":
 		$Camera2D.enabled = false
@@ -135,9 +141,26 @@ func _return_dict_for_save():
 	"level" : level,
 	"skills" : skills,
 	"potions" : potions,
-	"colour" : colour
+	"colour" : colour,
+	"UI_a" : UI_a,
+	"UI_b" : UI_b,
+	"UI_c" : UI_c,
+	"UI_d" : UI_d
 	}
 	return save_dict
+
+func _change_UI(new_a, new_b, new_c, new_d):
+	UI_a = new_a
+	UI_b = new_b
+	UI_c = new_c
+	UI_d = new_d
+	get_parent().get_parent().get_parent().get_node("GameUI/DialoguePanel").change_colours(UI_a, UI_b, UI_c, UI_d)
+
+func _update_colours(new_a, new_b, new_c, new_d):
+	UI_a = new_a
+	UI_b = new_b
+	UI_c = new_c
+	UI_d = new_d
 
 func slice():
 	if current_target and skills["Attacks"].has("Slice") and !current_target.dodges():

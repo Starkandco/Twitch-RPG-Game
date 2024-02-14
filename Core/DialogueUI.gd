@@ -60,6 +60,7 @@ func generate_options_and_labels(options : Array):
 		optionsContainer.add_child(button)
 		button.flat = true
 		button.custom_minimum_size = Vector2(125, 30)
+		button.add_theme_constant_override("font_size", 20)
 		button.pressed.connect(on_option_selected.bind(option["callback"])) 
 		
 		# Create a new Label node as a child of the Button node
