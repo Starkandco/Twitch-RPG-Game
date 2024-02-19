@@ -1,7 +1,7 @@
 extends Node
 
 var gift_script_path = "res://gift-master/example/Example.gd"
-var player_script_path = "res://Chatters/Chatter/Player.gd"
+var player_script_path = "res://chatters/chatter/player.gd"
 var whitelist_names = {"GIFT": [], "Player": []}
 var whitelist_params = {"GIFT": [], "Player": []}
 

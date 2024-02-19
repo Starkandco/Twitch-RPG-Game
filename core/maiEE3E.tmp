@@ -1,0 +1,137 @@
+[gd_scene load_steps=6 format=3 uid="uid://658rdhraqhcj"]
+
+[ext_resource type="Script" path="res://chatters/chatter_game_container.gd" id="1_1agpd"]
+[ext_resource type="PackedScene" uid="uid://6p2yrj7s76qn" path="res://chatters/chatter_game_container.tscn" id="1_cg8wq"]
+[ext_resource type="Script" path="res://gift-master/example/Example.gd" id="1_tbqyh"]
+[ext_resource type="Script" path="res://core/debug.gd" id="3_ejc2y"]
+[ext_resource type="Script" path="res://core/whitelist_builder.gd" id="4_ibk1w"]
+
+[node name="MainScene" type="Node2D"]
+
+[node name="BackgroundRect" type="ColorRect" parent="."]
+offset_right = 1920.0
+offset_bottom = 1080.0
+color = Color(0, 0, 0, 1)
+script = ExtResource("1_tbqyh")
+channel = "Starkandco"
+username = "StarkandcoBot"
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+custom_minimum_size = Vector2(1920, 1080)
+
+[node name="OverallGameSubViewport" type="SubViewport" parent="SubViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewportContainer/OverallGameSubViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 400
+theme_override_constants/margin_bottom = 50
+
+[node name="ChatterGridContainer" type="GridContainer" parent="SubViewportContainer/OverallGameSubViewport/MarginContainer"]
+layout_mode = 2
+script = ExtResource("1_1agpd")
+chatter_container = ExtResource("1_cg8wq")
+
+[node name="WhiteList" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("4_ibk1w")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="MarginContainer" type="MarginContainer" parent="UI"]
+custom_minimum_size = Vector2(400, 0)
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -300.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="UI/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(380, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "!join to join - Once joined, commands no longer require \"!\"
+
+!leave - quit out of any party and the game entirely
+
+!help - receive private message containing key commands
+
+Joinable parties:"
+autowrap_mode = 2
+
+[node name="PartyList" type="VBoxContainer" parent="UI/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Debug" type="Window" parent="."]
+position = Vector2i(784, 50)
+size = Vector2i(300, 250)
+script = ExtResource("3_ejc2y")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Debug"]
+offset_right = 300.0
+offset_bottom = 171.0
+
+[node name="LineEdit" type="LineEdit" parent="Debug/VBoxContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+text = "starkandco"
+
+[node name="Button" type="Button" parent="Debug/VBoxContainer"]
+layout_mode = 2
+text = "Join"
+
+[node name="Button2" type="Button" parent="Debug/VBoxContainer"]
+layout_mode = 2
+text = "Start party"
+
+[node name="Button3" type="Button" parent="Debug/VBoxContainer"]
+layout_mode = 2
+text = "Start adventure"
+
+[node name="Button4" type="Button" parent="Debug/VBoxContainer"]
+layout_mode = 2
+text = "Leave"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Debug/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Debug/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "chat"
+
+[node name="LineEdit" type="LineEdit" parent="Debug/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+
+[connection signal="child_exiting_tree" from="SubViewportContainer/OverallGameSubViewport/MarginContainer/ChatterGridContainer" to="SubViewportContainer/OverallGameSubViewport/MarginContainer/ChatterGridContainer" method="_on_child_exiting_tree"]
+[connection signal="close_requested" from="Debug" to="Debug" method="_on_close_requested"]
+[connection signal="text_changed" from="Debug/VBoxContainer/LineEdit" to="Debug" method="_on_line_edit_text_changed"]
+[connection signal="text_submitted" from="Debug/VBoxContainer/LineEdit" to="Debug" method="_on_line_edit_text_submitted"]
+[connection signal="pressed" from="Debug/VBoxContainer/Button" to="Debug" method="_on_button_pressed"]
+[connection signal="pressed" from="Debug/VBoxContainer/Button2" to="Debug" method="_on_button_2_pressed"]
+[connection signal="pressed" from="Debug/VBoxContainer/Button3" to="Debug" method="_on_button_3_pressed"]
+[connection signal="pressed" from="Debug/VBoxContainer/Button4" to="Debug" method="_on_button_4_pressed"]
+[connection signal="text_submitted" from="Debug/VBoxContainer/HBoxContainer2/LineEdit" to="Debug" method="_on_line_edit_say_text_submitted"]

@@ -1,0 +1,31 @@
+[gd_scene load_steps=6 format=3 uid="uid://bh67xw0cr24r4"]
+
+[ext_resource type="PackedScene" uid="uid://r2ff2b52vout" path="res://units/enemy.tscn" id="1_vq4d7"]
+[ext_resource type="Script" path="res://units/bat.gd" id="2_phlgi"]
+[ext_resource type="Texture2D" uid="uid://bg2ggb8ufiis2" path="res://assets/bat.png" id="3_sp0m8"]
+[ext_resource type="Texture2D" uid="uid://cs1nlr0ex4f2a" path="res://assets/bat2.png" id="4_huycq"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_3ybs7"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_sp0m8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_huycq")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Bat" instance=ExtResource("1_vq4d7")]
+script = ExtResource("2_phlgi")
+mana = 0
+max_mana = 0
+dodge = 20
+experience = 100
+
+[node name="AnimatedSprite2D" parent="." index="1"]
+sprite_frames = SubResource("SpriteFrames_3ybs7")
+frame_progress = 0.0

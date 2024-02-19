@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://ui8cjo4fpbfc"]
+
+[ext_resource type="PackedScene" uid="uid://ssaxn4lspnf7" path="res://core/game_scene.tscn" id="1_1vvqp"]
+[ext_resource type="Texture2D" uid="uid://camvdpgwg1ehl" path="res://assets/BackgroundCave.png" id="2_gsa5f"]
+
+[node name="SecondLevel" instance=ExtResource("1_1vvqp")]
+string_name = "second_level"
+
+[node name="TextureRect" parent="ParallaxBackground/ParallaxLayer" index="0"]
+texture = ExtResource("2_gsa5f")

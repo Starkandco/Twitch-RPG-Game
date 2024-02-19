@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://sqmkb8j6tdlo"]
+
+[ext_resource type="PackedScene" uid="uid://r2ff2b52vout" path="res://units/enemy.tscn" id="1_qvops"]
+
+[node name="Human" instance=ExtResource("1_qvops")]
+strength = 10
+defense = 2
+base_defense = 2
+mana = 0
+max_mana = 0
+health = 20
+max_health = 20

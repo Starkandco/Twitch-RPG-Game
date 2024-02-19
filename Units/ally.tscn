@@ -1,9 +1,9 @@
 [gd_scene load_steps=6 format=3 uid="uid://bx5pvw4fvvku5"]
 
-[ext_resource type="PackedScene" uid="uid://bh5oa0suawtmy" path="res://Units/unit.tscn" id="1_p6aw7"]
-[ext_resource type="Script" path="res://Units/Ally.gd" id="2_c535e"]
-[ext_resource type="Texture2D" uid="uid://dqb53evvirthg" path="res://Assets/AllyTest.png" id="3_3m2l7"]
-[ext_resource type="Texture2D" uid="uid://b5j18eyj8abbk" path="res://Assets/AllyTest2.png" id="4_ypejh"]
+[ext_resource type="PackedScene" uid="uid://bh5oa0suawtmy" path="res://units/unit.tscn" id="1_p6aw7"]
+[ext_resource type="Script" path="res://units/ally.gd" id="2_c535e"]
+[ext_resource type="Texture2D" uid="uid://dqb53evvirthg" path="res://assets/AllyTest.png" id="3_3m2l7"]
+[ext_resource type="Texture2D" uid="uid://b5j18eyj8abbk" path="res://assets/AllyTest2.png" id="4_ypejh"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_n0x2u"]
 animations = [{

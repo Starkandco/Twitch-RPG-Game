@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b5j18eyj8abbk"
-path="res://.godot/imported/AllyTest2.png-1f6d5e6720ffb3f6cb09d14b2b119a6c.ctex"
+path="res://.godot/imported/AllyTest2.png-1d32d19c78cfd0f846ae007084793de3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/AllyTest2.png"
-dest_files=["res://.godot/imported/AllyTest2.png-1f6d5e6720ffb3f6cb09d14b2b119a6c.ctex"]
+source_file="res://assets/AllyTest2.png"
+dest_files=["res://.godot/imported/AllyTest2.png-1d32d19c78cfd0f846ae007084793de3.ctex"]
 
 [params]
 

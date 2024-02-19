@@ -1,12 +1,12 @@
 [gd_scene load_steps=6 format=3 uid="uid://c6mqdm5lea244"]
 
-[ext_resource type="Shader" path="res://Assets/UIBackground.gdshader" id="1_g6clh"]
-[ext_resource type="Script" path="res://Core/DialogueUI.gd" id="1_m61a3"]
-[ext_resource type="Script" path="res://Core/OptionPanel.gd" id="3_hane7"]
+[ext_resource type="Shader" path="res://assets/UIBackground.gdshader" id="1_aqf6p"]
+[ext_resource type="Script" path="res://core/dialogue_ui.gd" id="2_bdu3s"]
+[ext_resource type="Script" path="res://core/option_panel.gd" id="3_gp0u8"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_nf3sq"]
 resource_local_to_scene = true
-shader = ExtResource("1_g6clh")
+shader = ExtResource("1_aqf6p")
 shader_parameter/top_left = null
 shader_parameter/top_right = null
 shader_parameter/bottom_left = null
@@ -19,7 +19,8 @@ shader_parameter/border_inner_hori_threshold = null
 shader_parameter/border_inner_vert_threshold = null
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_iomfo"]
-shader = ExtResource("1_g6clh")
+resource_local_to_scene = true
+shader = ExtResource("1_aqf6p")
 shader_parameter/top_left = null
 shader_parameter/top_right = null
 shader_parameter/bottom_left = null
@@ -37,8 +38,7 @@ custom_minimum_size = Vector2(0, 150)
 anchors_preset = 10
 anchor_right = 1.0
 grow_horizontal = 2
-script = ExtResource("1_m61a3")
-has_option_panel_child = true
+script = ExtResource("2_bdu3s")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -62,18 +62,17 @@ theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
 theme_override_constants/outline_size = 2
 theme_override_constants/shadow_outline_size = 2
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 32
 autowrap_mode = 2
 
 [node name="OptionPanel" type="Panel" parent="."]
 unique_name_in_owner = true
 material = SubResource("ShaderMaterial_iomfo")
-layout_mode = 2
-offset_top = 530.0
+layout_mode = 0
+offset_top = 140.0
 offset_right = 1.0
-offset_bottom = 553.0
-grow_vertical = 2
-script = ExtResource("3_hane7")
+offset_bottom = 163.0
+script = ExtResource("3_gp0u8")
 
 [node name="OptionHolder" type="GridContainer" parent="OptionPanel"]
 unique_name_in_owner = true

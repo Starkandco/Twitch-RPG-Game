@@ -11,13 +11,13 @@ config_version=5
 [application]
 
 config/name="Twitch RPG Game"
-run/main_scene="res://Core/main_scene.tscn"
+run/main_scene="res://core/main_scene.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
-config/icon="res://Assets/icon.svg"
+config/icon="res://assets/icon.svg"
 
 [autoload]
 
-PanelColourManager="*res://Core/PanelColourManager.gd"
+PanelColourManager="*res://core/panel_colour_manager.gd"
 
 [display]
 

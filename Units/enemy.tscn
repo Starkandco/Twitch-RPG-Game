@@ -1,9 +1,16 @@
-[gd_scene load_steps=9 format=3 uid="uid://r2ff2b52vout"]
+[gd_scene load_steps=18 format=3 uid="uid://r2ff2b52vout"]
 
-[ext_resource type="PackedScene" uid="uid://bh5oa0suawtmy" path="res://Units/unit.tscn" id="1_7m5sh"]
-[ext_resource type="Script" path="res://Units/Enemy.gd" id="2_jpcea"]
-[ext_resource type="Texture2D" uid="uid://iqrl0oejdxb2" path="res://Assets/Human.png" id="3_nns4s"]
-[ext_resource type="Texture2D" uid="uid://d3x17urn77xu4" path="res://Assets/Human2.png" id="4_xdqvc"]
+[ext_resource type="PackedScene" uid="uid://bh5oa0suawtmy" path="res://units/unit.tscn" id="1_7m5sh"]
+[ext_resource type="Script" path="res://units/enemy.gd" id="2_jpcea"]
+[ext_resource type="Texture2D" uid="uid://iqrl0oejdxb2" path="res://assets/Human.png" id="3_nns4s"]
+[ext_resource type="Texture2D" uid="uid://d3x17urn77xu4" path="res://assets/Human2.png" id="4_xdqvc"]
+[ext_resource type="Shader" path="res://assets/colour_changer.gdshader" id="5_juy8m"]
+[ext_resource type="Texture2D" uid="uid://bn4m0rrebj5jf" path="res://assets/bleed.png" id="5_wykr6"]
+[ext_resource type="Texture2D" uid="uid://18neddw50v7p" path="res://assets/fire.png" id="6_31wo5"]
+[ext_resource type="Texture2D" uid="uid://brmw8vcd5cswc" path="res://assets/shield.png" id="7_x7rgc"]
+[ext_resource type="Texture2D" uid="uid://cchhc6eul21xu" path="res://assets/frostbit.png" id="8_vspvc"]
+[ext_resource type="Texture2D" uid="uid://bjvyi3ldmbbxo" path="res://assets/Marker.png" id="9_hbhxr"]
+[ext_resource type="Texture2D" uid="uid://2vichsoxl1is" path="res://assets/miss2.png" id="10_8spvw"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_jgk43"]
 animations = [{
@@ -18,6 +25,9 @@ animations = [{
 "name": &"default",
 "speed": 2.0
 }]
+
+[sub_resource type="Animation" id="Animation_0j3sq"]
+length = 0.001
 
 [sub_resource type="Animation" id="Animation_ty4jn"]
 resource_name = "attack"
@@ -34,17 +44,141 @@ tracks/0/keys = {
 "values": [Vector2(0, 0), Vector2(-15, 0), Vector2(-30, 0), Vector2(0, 0)]
 }
 
-[sub_resource type="Animation" id="Animation_0j3sq"]
-length = 0.001
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_nerul"]
 _data = {
 "RESET": SubResource("Animation_0j3sq"),
 "attack": SubResource("Animation_ty4jn")
 }
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8dktr"]
+shader = ExtResource("5_juy8m")
+shader_parameter/colour_from = Color(0.560784, 0.337255, 0.231373, 1)
+shader_parameter/colour_to = Color(0.560784, 0.337255, 0.231373, 1)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_6vrgw"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_wykr6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_wykr6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_wykr6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_wykr6")
+}, {
+"duration": 1.0,
+"texture": null
+}],
+"loop": false,
+"name": &"bleeding",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_31wo5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_31wo5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_31wo5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_31wo5")
+}, {
+"duration": 1.0,
+"texture": null
+}],
+"loop": false,
+"name": &"burnt",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": null
+}],
+"loop": false,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_x7rgc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_x7rgc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_x7rgc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_x7rgc")
+}, {
+"duration": 1.0,
+"texture": null
+}],
+"loop": false,
+"name": &"defending",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_vspvc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_vspvc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_vspvc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_vspvc")
+}, {
+"duration": 1.0,
+"texture": null
+}],
+"loop": false,
+"name": &"frostbit",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("10_8spvw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_8spvw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_8spvw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_8spvw")
+}, {
+"duration": 1.0,
+"texture": null
+}],
+"loop": false,
+"name": &"miss",
+"speed": 5.0
+}]
+
 [node name="Enemy" instance=ExtResource("1_7m5sh")]
 script = ExtResource("2_jpcea")
+strength = 20
+defense = 4
+magic = 0
+base_defense = 4
+mana = 1
+max_mana = 1
+dodge = 1
+health = 50
+max_health = 50
+experience = 25
+possible_moves = ["attack", "defend"]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." index="1"]
 sprite_frames = SubResource("SpriteFrames_jgk43")
@@ -55,3 +189,15 @@ frame_progress = 0.408159
 libraries = {
 "": SubResource("AnimationLibrary_nerul")
 }
+
+[node name="AnimatedSprite2D2" type="AnimatedSprite2D" parent="." index="3"]
+material = SubResource("ShaderMaterial_8dktr")
+position = Vector2(-20, -19.935)
+sprite_frames = SubResource("SpriteFrames_6vrgw")
+animation = &"bleeding"
+autoplay = "default"
+
+[node name="TurnMarker" type="Sprite2D" parent="." index="4"]
+visible = false
+position = Vector2(0, -48)
+texture = ExtResource("9_hbhxr")

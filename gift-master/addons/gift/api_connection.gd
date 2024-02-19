@@ -110,6 +110,7 @@ func send_whisper(from_user_id : String, to_user_id : String, message : String) 
 	var params: String = "?"
 	params += "from_user_id=%s" % from_user_id
 	params += "&to_user_id=%s" % to_user_id
+	print(headers)
 	var response: Dictionary = await(
 		request(
 			HTTPClient.METHOD_POST,

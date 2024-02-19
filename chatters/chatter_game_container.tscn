@@ -1,0 +1,403 @@
+[gd_scene load_steps=20 format=3 uid="uid://6p2yrj7s76qn"]
+
+[ext_resource type="Script" path="res://chatters/saving.gd" id="1_ndh0t"]
+[ext_resource type="PackedScene" uid="uid://bn6i36gi0yesj" path="res://chatters/inventory.tscn" id="2_jjbi2"]
+[ext_resource type="Script" path="res://core/LevelLoader.gd" id="3_drloe"]
+[ext_resource type="Script" path="res://chatters/fighting_panel.gd" id="3_q3si6"]
+[ext_resource type="PackedScene" uid="uid://c6mqdm5lea244" path="res://core/dialogue_ui.tscn" id="3_r6bw7"]
+[ext_resource type="Shader" path="res://assets/UIBackground.gdshader" id="3_vkk8r"]
+[ext_resource type="Script" path="res://core/base_panel.gd" id="5_b03td"]
+[ext_resource type="Texture2D" uid="uid://bn4m0rrebj5jf" path="res://assets/bleed.png" id="5_rsx2f"]
+[ext_resource type="Texture2D" uid="uid://18neddw50v7p" path="res://assets/fire.png" id="6_xdkfw"]
+[ext_resource type="Texture2D" uid="uid://cchhc6eul21xu" path="res://assets/frostbit.png" id="8_46ekp"]
+[ext_resource type="Script" path="res://chatters/SkillLabel.gd" id="10_kgsv4"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8danx"]
+resource_local_to_scene = true
+shader = ExtResource("3_vkk8r")
+shader_parameter/top_left = null
+shader_parameter/top_right = null
+shader_parameter/bottom_left = null
+shader_parameter/bottom_right = null
+shader_parameter/border_outer_hori_threshold = null
+shader_parameter/border_outer_vert_threshold = null
+shader_parameter/border_middle_hori_threshold = null
+shader_parameter/border_middle_vert_threshold = null
+shader_parameter/border_inner_hori_threshold = null
+shader_parameter/border_inner_vert_threshold = null
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_r0pr2"]
+shader = ExtResource("3_vkk8r")
+shader_parameter/top_left = null
+shader_parameter/top_right = null
+shader_parameter/bottom_left = null
+shader_parameter/bottom_right = null
+shader_parameter/border_outer_hori_threshold = null
+shader_parameter/border_outer_vert_threshold = null
+shader_parameter/border_middle_hori_threshold = null
+shader_parameter/border_middle_vert_threshold = null
+shader_parameter/border_inner_hori_threshold = null
+shader_parameter/border_inner_vert_threshold = null
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cnb2a"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b8nhi"]
+bg_color = Color(0.937255, 0.521569, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ceqxx"]
+bg_color = Color(0.356863, 0.698039, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aouop"]
+bg_color = Color(0.184314, 0.611765, 1, 1)
+
+[sub_resource type="Shader" id="Shader_joj57"]
+resource_local_to_scene = true
+code = "shader_type canvas_item;
+
+uniform vec4 top_left : source_color;
+uniform vec4 top_right : source_color;
+uniform vec4 bottom_left : source_color;
+uniform vec4 bottom_right : source_color;
+
+uniform float border_outer_hori_threshold;
+uniform float border_outer_vert_threshold;
+uniform float border_middle_hori_threshold;
+uniform float border_middle_vert_threshold;
+uniform float border_inner_hori_threshold;
+uniform float border_inner_vert_threshold;
+
+void fragment() {
+    // Figure out our relation to the border
+    float left_border = UV.x;
+    float right_border = 1.0 - UV.x;
+    float bottom_border = UV.y;
+    float top_border = 1.0 - UV.y;
+    
+    // Let's check if the current position is on an outer, middle or inner border
+    bool is_outer_left_border = left_border < border_outer_hori_threshold;
+    bool is_outer_right_border = right_border < border_outer_hori_threshold;
+    bool is_outer_bottom_border = bottom_border < border_outer_vert_threshold;
+    bool is_outer_top_border = top_border < border_outer_vert_threshold;
+
+    bool is_middle_left_border = left_border < border_middle_hori_threshold;
+    bool is_middle_right_border = right_border < border_middle_hori_threshold;
+    bool is_middle_bottom_border = bottom_border < border_middle_vert_threshold;
+    bool is_middle_top_border = top_border < border_middle_vert_threshold;
+
+    bool is_inner_left_border = left_border < border_inner_hori_threshold;
+    bool is_inner_right_border = right_border < border_inner_hori_threshold;
+    bool is_inner_bottom_border = bottom_border < border_inner_vert_threshold;
+    bool is_inner_top_border = top_border < border_inner_vert_threshold;
+    
+    // Default colours
+    vec4 border_border_colour = vec4(0.0, 0.0, 0.0, 1.0); // Black
+    vec4 middle_border_colour = vec4(1.0, 1.0, 1.0, 1.0); // White
+    vec4 colour;
+    
+    // Check for borders
+    if (is_outer_left_border || is_outer_right_border || is_outer_bottom_border || is_outer_top_border) {
+        // Fill in outer borders
+        colour = border_border_colour;
+    } else if (is_middle_left_border || is_middle_right_border || is_middle_bottom_border || is_middle_top_border) {
+        // Fill in middle borders
+        colour = middle_border_colour;
+    } else if (is_inner_left_border || is_inner_right_border || is_inner_bottom_border || is_inner_top_border) {
+        // Fill in inner borders
+        colour = border_border_colour;
+    } else {
+        // Linear gradient blending
+        vec4 top = mix(top_left, top_right, UV.x);
+        vec4 bottom = mix(bottom_left, bottom_right, UV.x);
+        colour = mix(top, bottom, UV.y);
+    }
+    COLOR = colour;
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tejnm"]
+resource_local_to_scene = true
+shader = SubResource("Shader_joj57")
+shader_parameter/top_left = null
+shader_parameter/top_right = null
+shader_parameter/bottom_left = null
+shader_parameter/bottom_right = null
+shader_parameter/border_outer_hori_threshold = null
+shader_parameter/border_outer_vert_threshold = null
+shader_parameter/border_middle_hori_threshold = null
+shader_parameter/border_middle_vert_threshold = null
+shader_parameter/border_inner_hori_threshold = null
+shader_parameter/border_inner_vert_threshold = null
+
+[node name="ChatterViewportContainer" type="SubViewportContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+
+[node name="ChatterGameSubViewport" type="SubViewport" parent="."]
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="Saving" type="Node" parent="ChatterGameSubViewport"]
+script = ExtResource("1_ndh0t")
+
+[node name="LevelLoader" type="Node" parent="ChatterGameSubViewport"]
+script = ExtResource("3_drloe")
+
+[node name="GameUI" type="CanvasLayer" parent="ChatterGameSubViewport"]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ChatterGameSubViewport/GameUI"]
+custom_minimum_size = Vector2(0, 150)
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+
+[node name="FightingPanel" type="Panel" parent="ChatterGameSubViewport/GameUI/VBoxContainer"]
+visible = false
+material = SubResource("ShaderMaterial_8danx")
+custom_minimum_size = Vector2(0, 175)
+layout_mode = 2
+script = ExtResource("3_q3si6")
+
+[node name="MarginContainer" type="MarginContainer" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="AttackPanel" type="Panel" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer"]
+material = SubResource("ShaderMaterial_r0pr2")
+custom_minimum_size = Vector2(200, 140)
+layout_mode = 2
+script = ExtResource("5_b03td")
+
+[node name="Attacks" type="Label" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/AttackPanel"]
+layout_mode = 2
+offset_left = 20.0
+offset_right = 127.0
+offset_bottom = 141.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 2
+theme_override_constants/shadow_outline_size = 2
+theme_override_font_sizes/font_size = 32
+text = "Slice
+Shove
+Impale
+"
+
+[node name="MagicPanel" type="Panel" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer"]
+material = SubResource("ShaderMaterial_r0pr2")
+custom_minimum_size = Vector2(200, 140)
+layout_mode = 2
+script = ExtResource("5_b03td")
+
+[node name="Magic" type="Label" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/MagicPanel"]
+layout_mode = 2
+offset_left = 20.0
+offset_right = 150.0
+offset_bottom = 141.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 2
+theme_override_constants/shadow_outline_size = 2
+theme_override_font_sizes/font_size = 32
+text = "Fire
+Ice
+Thunder
+"
+
+[node name="MiscPanel" type="Panel" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer"]
+material = SubResource("ShaderMaterial_r0pr2")
+custom_minimum_size = Vector2(250, 140)
+layout_mode = 2
+script = ExtResource("5_b03td")
+
+[node name="Misc" type="Label" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/MiscPanel"]
+layout_mode = 2
+offset_left = 20.0
+offset_right = 229.0
+offset_bottom = 141.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 2
+theme_override_constants/shadow_outline_size = 2
+theme_override_font_sizes/font_size = 32
+text = "Item <Name>
+Defend
+Run
+"
+
+[node name="StatLabels" type="VBoxContainer" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Experience" type="Label" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/StatLabels"]
+layout_mode = 2
+text = "Exp:"
+
+[node name="Health" type="Label" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/StatLabels"]
+layout_mode = 2
+text = "Health:"
+
+[node name="Mana" type="Label" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/StatLabels"]
+layout_mode = 2
+text = "Mana:"
+
+[node name="Stats" type="VBoxContainer" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Experience" type="ProgressBar" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/Stats"]
+custom_minimum_size = Vector2(50, 20)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_cnb2a")
+theme_override_styles/fill = SubResource("StyleBoxFlat_b8nhi")
+
+[node name="Health" type="ProgressBar" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/Stats"]
+custom_minimum_size = Vector2(50, 20)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_cnb2a")
+theme_override_styles/fill = SubResource("StyleBoxFlat_ceqxx")
+value = 100.0
+
+[node name="Mana" type="ProgressBar" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/Stats"]
+custom_minimum_size = Vector2(50, 20)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_cnb2a")
+theme_override_styles/fill = SubResource("StyleBoxFlat_aouop")
+value = 100.0
+
+[node name="Debuffs" type="VBoxContainer" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/Debuffs"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/Debuffs/HBoxContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("5_rsx2f")
+expand_mode = 1
+
+[node name="BleedCounter" type="Label" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/Debuffs/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 2
+theme_override_constants/shadow_outline_size = 2
+theme_override_font_sizes/font_size = 32
+text = "0"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/Debuffs"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/Debuffs/HBoxContainer2"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("6_xdkfw")
+expand_mode = 1
+
+[node name="BurnCounter" type="Label" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/Debuffs/HBoxContainer2"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 2
+theme_override_constants/shadow_outline_size = 2
+theme_override_font_sizes/font_size = 32
+text = "0"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/Debuffs"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/Debuffs/HBoxContainer3"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("8_46ekp")
+expand_mode = 1
+
+[node name="FrostbiteCounter" type="Label" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/Debuffs/HBoxContainer3"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 2
+theme_override_constants/shadow_outline_size = 2
+theme_override_font_sizes/font_size = 32
+text = "0"
+
+[node name="Control" type="Control" parent="ChatterGameSubViewport/GameUI/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="Inventory" parent="ChatterGameSubViewport/GameUI/VBoxContainer" instance=ExtResource("2_jjbi2")]
+visible = false
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="ChatterGameSubViewport/GameUI/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+
+[node name="Label" type="Label" parent="ChatterGameSubViewport/GameUI/VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 2
+theme_override_constants/shadow_outline_size = 2
+theme_override_font_sizes/font_size = 32
+script = ExtResource("10_kgsv4")
+
+[node name="DialoguePanel" parent="ChatterGameSubViewport/GameUI" instance=ExtResource("3_r6bw7")]
+visible = false
+material = SubResource("ShaderMaterial_tejnm")
+offset_bottom = 150.0
+
+[node name="GameOverScreen" type="ColorRect" parent="ChatterGameSubViewport/GameUI"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Label" type="Label" parent="ChatterGameSubViewport/GameUI/GameOverScreen"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -353.5
+offset_top = -87.5
+offset_right = 353.5
+offset_bottom = 87.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 128
+text = "Game over!"
+
+[connection signal="resized" from="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel" to="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel" method="_on_resized"]

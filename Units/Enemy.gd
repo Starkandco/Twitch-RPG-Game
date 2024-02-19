@@ -8,26 +8,32 @@ var count = 0
 var bleed_count = 0
 var burn_count = 0
 var frostbite_count = 0
-
-var strength = 20
-var defense = 4
-var magic = 0
-var base_defense = 4
-var mana = 1
-var max_mana = 1
-var dodge = 1
-var health = 50
-var max_health = 50
-var possible_moves = ["attack", "defend"]
 var shocked = false
+
+@export var strength = 20
+@export var defense = 4
+@export var magic = 0
+@export var base_defense = 4
+@export var mana = 1
+@export var max_mana = 1
+@export var dodge = 1
+@export var health = 50
+@export var max_health = 50
+@export var experience = 25
+@export var possible_moves = ["attack", "defend"]
 
 signal turn_start
 signal turn_over
+signal dead
 signal reset_done
 
+func set_colour(colour):
+	$AnimatedSprite2D2.material.set_shader_parameter("colour_to", Color(colour))
+
 func _ready():
-	fight_UI.fight_over.connect(end_fight)
+	turn_over.connect(end_turn)
 	turn_start.connect(reset)
+	$AnimatedSprite2D2.animation_finished.connect($AnimatedSprite2D2.play.bind("default"))
 	dialogue_tree = {
 	"text": "Prepare to go down!!",
 	"options": [
@@ -37,20 +43,35 @@ func _ready():
 		}	]	}
 
 func handle_response(arg):
-	huh = {
-	"text": (".... this should be easy they can't write out simple commands" if count >= 5 else "wanna try again?"),
-	"options": [
-		{
-			"text": "En garde!",
-			"callback": "show_dialogue_tree_2"
-		} 	]	} 
-	
-	match arg.to_upper():
-		"EN GARDE!":
-			dialogue_UI.on_option_selected("start_fight")
-		var _default:
-			count += 1
-			dialogue_UI.on_option_selected("show_huh")
+	if health > 0:
+		huh = {
+		"text": (".... this should be easy they can't write out simple commands" if count >= 5 else "wanna try again?"),
+		"options": [
+			{
+				"text": "En garde!",
+				"callback": "show_dialogue_tree_2"
+			} 	]	} 
+		
+		match arg.to_upper():
+			"EN GARDE!":
+				dialogue_UI.on_option_selected("start_fight")
+			var _default:
+				count += 1
+				dialogue_UI.on_option_selected("show_huh")
+	else:
+		huh = {
+		"text": ("You can \"continue\" on now"),
+		"options": [
+			{
+				"text": "Continue",
+				"callback": "end_interaction"
+			} 	]	}
+		match arg.to_upper():
+			"CONTINUE":
+				dialogue_UI.on_option_selected("end_interaction")
+			var _default:
+				count += 1
+				dialogue_UI.on_option_selected("show_huh")
 
 func call_dialogue_callback(callback_name):
 	var new_callable = Callable(self, callback_name)
@@ -63,9 +84,13 @@ func reset():
 	defense = base_defense
 	reset_done.emit()
 
+func end_turn():
+	$TurnMarker.visible = false
+
 func decide(players):
 	turn_start.emit()
-	turn_start_damage()
+	$TurnMarker.visible = true
+	await turn_start_damage()
 	await get_tree().create_timer(1).timeout
 	if health > 0 and !shocked:
 		var move = select_move()
@@ -76,32 +101,50 @@ func decide(players):
 		turn_over.emit()
 
 func turn_start_damage():
-	await get_tree().create_timer(0.5).timeout
-	bleed()
-	await get_tree().create_timer(0.5).timeout	
-	burn()
-	await get_tree().create_timer(0.5).timeout
-	freeze()
+	if $AnimatedSprite2D2.animation != "default":
+		await $AnimatedSprite2D2.animation_finished
+	if bleed_count > 0 and health > 0:
+		$AnimatedSprite2D2.play("bleeding")
+		await $AnimatedSprite2D2.animation_finished
+		bleed()
+	if burn_count > 0 and health > 0:
+		$AnimatedSprite2D2.play("burnt")
+		await $AnimatedSprite2D2.animation_finished
+		burn()
+	if frostbite_count > 0 and health > 0:
+		$AnimatedSprite2D2.play("frostbit")
+		await $AnimatedSprite2D2.animation_finished
+		freeze()
+	return
 
 func attack(players):
 	$AnimationPlayer.play("attack")
 	var player = players[randi() % players.size()]
-	if !player._dodges():
+	var dodge_success = await player._dodges()
+	if !dodge_success:
 		players[randi() % players.size()]._take_damage(strength) 
+	await $AnimationPlayer.animation_finished
 	turn_over.emit()
 
 func defend(_players):
+	$AnimatedSprite2D2.play("defending")
+	await $AnimatedSprite2D2.animation_finished
 	defense *= 2
 	turn_over.emit()
 
 func dodges():
-	return randi() % 100 >= 100 - dodge
+	var dodged = randi() % 100 >= 100 - dodge
+	if dodged:
+		$AnimatedSprite2D2.play("miss")
+	return dodged
 
 func select_move():
 	return Callable(self, possible_moves[randi() % possible_moves.size()])
 
 func take_physical_hit(value):
 	var damage = defense - value
+	if defense > base_defense:
+		$AnimatedSprite2D2.play("defending")
 	take_damage(abs(damage) if damage < 0 else 0)
 
 func take_magical_hit(value, colour = Color.BLACK):
@@ -109,9 +152,11 @@ func take_magical_hit(value, colour = Color.BLACK):
 
 func take_damage(damage, colour = Color.BLACK):
 	health -= damage
+	if health <= 0:
+		end_fight()
 	
 	var damage_label = generate_damage_label(damage, colour)
-	damage_label.global_position = global_position + Vector2(0, (-50 * randi_range(1,5)))
+	damage_label.global_position = global_position + Vector2((-50 * randi_range(0,3)), -50)
 
 	var tween = get_tree().create_tween().set_parallel(true)
 
@@ -132,6 +177,11 @@ func start_fight():
 	fight_UI.start_fight(self)
 
 func end_fight():
+	dead.emit()
+	visible = false
+
+func end_interaction():
+	fight_UI.end = false
 	interaction_finished.emit()
 	queue_free()
 

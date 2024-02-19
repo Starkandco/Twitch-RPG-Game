@@ -9,7 +9,7 @@ var chunks : PackedByteArray = PackedByteArray()
 
 func get_authorization_code(client_id : String, scopes : PackedStringArray, force_verify : bool = false) -> String:
 	start_tcp_server()
-	OS.shell_open("https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=%s&scope=%s&redirect_uri=%s&force_verify=%s" % [client_id, " ".join(scopes).uri_encode(), redirect_url, "true" if force_verify else "false"].map(func (a : String): return a.uri_encode()))
+	OS.shell_open("https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=%s&scope=%s&redirect_uri=%s&force_verify=%s" % [client_id, " ".join(scopes), redirect_url, "true" if force_verify else "false"].map(func (a : String): return a.uri_encode()))
 	print("Waiting for user to login.")
 	var code : String = await(auth_code_received)
 	server.stop()
@@ -31,6 +31,17 @@ func login(client_id : String, client_secret : String, auth_code : String = "", 
 func poll() -> void:
 	if (server != null):
 		super.poll()
+	if (http_client != null):
+		http_client.poll()
+		if (http_client.get_status() == HTTPClient.STATUS_CONNECTED):
+			http_connected.emit()
+			if (!chunks.is_empty()):
+				var response = chunks.get_string_from_utf8()
+				token_received.emit(JSON.parse_string(response))
+				chunks.clear()
+				http_client = null
+		elif (http_client.get_status() == HTTPClient.STATUS_BODY):
+			chunks += http_client.read_response_body_chunk()
 
 func _handle_empty_response() -> void:
 	super._handle_empty_response()

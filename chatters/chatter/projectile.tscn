@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://c53u56ju0rvbr"]
+
+[ext_resource type="Script" path="res://chatters/chatter/projectile.gd" id="1_6m22g"]
+[ext_resource type="Texture2D" uid="uid://03s2d8kr52w1" path="res://assets/fireball.png" id="2_m623k"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ecuof"]
+size = Vector2(32, 32)
+
+[node name="Projectile" type="CharacterBody2D"]
+collision_layer = 8
+collision_mask = 8
+script = ExtResource("1_6m22g")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_m623k")
+
+[node name="CollisionPolygon2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_ecuof")

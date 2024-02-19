@@ -1,0 +1,42 @@
+[gd_scene load_steps=8 format=3 uid="uid://bslru636a0314"]
+
+[ext_resource type="PackedScene" uid="uid://b06v533p7elry" path="res://items/collectable.tscn" id="1_yka11"]
+[ext_resource type="Script" path="res://items/potion.gd" id="2_6sr37"]
+[ext_resource type="Texture2D" uid="uid://cqsnvaong5u2n" path="res://assets/potion.png" id="3_3c1o3"]
+[ext_resource type="Texture2D" uid="uid://ddal2l1bvas3f" path="res://assets/potion2.png" id="4_u7qkx"]
+[ext_resource type="Texture2D" uid="uid://dsberpvg0bibu" path="res://assets/potion3.png" id="5_qllul"]
+[ext_resource type="Texture2D" uid="uid://bqjewns17bsj1" path="res://assets/potion4.png" id="6_i2dqm"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_gcuhu"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_3c1o3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_3c1o3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_3c1o3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_u7qkx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_qllul")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_i2dqm")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Potion" instance=ExtResource("1_yka11")]
+script = ExtResource("2_6sr37")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." index="1"]
+sprite_frames = SubResource("SpriteFrames_gcuhu")
+autoplay = "default"
+frame_progress = 0.875229

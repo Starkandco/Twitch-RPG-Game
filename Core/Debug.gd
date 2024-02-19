@@ -1,34 +1,29 @@
 extends Window
 
 @onready var twitch_node = $"../BackgroundRect"
+var user = "starkandco"
 
 func _process(_delta):
 	if Input.is_action_just_pressed("debug"):
 		visible = !visible
 
+func _on_line_edit_text_submitted(new_text):
+	user = new_text
+
 func _on_button_pressed():
-	if !twitch_node.players.has("starkandco"):
-		twitch_node.players.append("starkandco")
+	twitch_node._join({"sender_data":{"user": user}})
 	
 func _on_button_2_pressed():
-	twitch_node._custom_handle_command({"user": "starkandco"}, "start party")
+	twitch_node._custom_handle_command({"user": user}, "start party")
 
 func _on_button_3_pressed():
-	twitch_node._custom_handle_command({"user": "starkandco"}, "start adventure")
+	twitch_node._custom_handle_command({"user": user}, "start adventure")
 
 func _on_button_4_pressed():
-	var player = twitch_node._get_player_entity("starkandco")
-	if player:
-		player.get_parent().get_parent().player_leave("starkandco")
-		if twitch_node.parties.has("starkandco"):
-			twitch_node.parties.erase("starkandco")
-		twitch_node.players.erase("starkandco")
-	else:
-		twitch_node.players.erase("starkandco")
+	twitch_node._leave({"sender_data":{"user": user}})
 
 func _on_close_requested():
 	visible = false
 
 func _on_line_edit_say_text_submitted(new_text):
-	twitch_node._custom_handle_command({"user": "starkandco"}, new_text)
-
+	twitch_node._custom_handle_command({"user": user}, new_text)

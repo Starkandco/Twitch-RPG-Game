@@ -1,17 +1,32 @@
-[gd_scene load_steps=16 format=3 uid="uid://6p2yrj7s76qn"]
+[gd_scene load_steps=19 format=3 uid="uid://6p2yrj7s76qn"]
 
-[ext_resource type="Script" path="res://Chatters/Saving.gd" id="1_ndh0t"]
-[ext_resource type="PackedScene" uid="uid://ssaxn4lspnf7" path="res://Core/game_scene.tscn" id="2_1ym6s"]
-[ext_resource type="PackedScene" uid="uid://bn6i36gi0yesj" path="res://Chatters/inventory.tscn" id="2_jjbi2"]
-[ext_resource type="Script" path="res://Chatters/FightingPanel.gd" id="3_q3si6"]
-[ext_resource type="PackedScene" uid="uid://c6mqdm5lea244" path="res://Core/DialogueUI.tscn" id="3_r6bw7"]
-[ext_resource type="Shader" path="res://Assets/UIBackground.gdshader" id="4_23y56"]
-[ext_resource type="Texture2D" uid="uid://bn4m0rrebj5jf" path="res://Assets/bleed.png" id="5_byp4e"]
-[ext_resource type="Texture2D" uid="uid://18neddw50v7p" path="res://Assets/fire.png" id="6_t1i7p"]
+[ext_resource type="Script" path="res://chatters/saving.gd" id="1_ndh0t"]
+[ext_resource type="PackedScene" uid="uid://ui8cjo4fpbfc" path="res://levels/second_level/second_level.tscn" id="2_esr46"]
+[ext_resource type="PackedScene" uid="uid://bn6i36gi0yesj" path="res://chatters/inventory.tscn" id="2_jjbi2"]
+[ext_resource type="Script" path="res://chatters/fighting_panel.gd" id="3_q3si6"]
+[ext_resource type="PackedScene" uid="uid://c6mqdm5lea244" path="res://core/dialogue_ui.tscn" id="3_r6bw7"]
+[ext_resource type="Shader" path="res://assets/UIBackground.gdshader" id="3_vkk8r"]
+[ext_resource type="Script" path="res://core/base_panel.gd" id="5_b03td"]
+[ext_resource type="Texture2D" uid="uid://bn4m0rrebj5jf" path="res://assets/bleed.png" id="5_rsx2f"]
+[ext_resource type="Texture2D" uid="uid://18neddw50v7p" path="res://assets/fire.png" id="6_xdkfw"]
+[ext_resource type="Texture2D" uid="uid://cchhc6eul21xu" path="res://assets/frostbit.png" id="8_46ekp"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_8danx"]
 resource_local_to_scene = true
-shader = ExtResource("4_23y56")
+shader = ExtResource("3_vkk8r")
+shader_parameter/top_left = null
+shader_parameter/top_right = null
+shader_parameter/bottom_left = null
+shader_parameter/bottom_right = null
+shader_parameter/border_outer_hori_threshold = null
+shader_parameter/border_outer_vert_threshold = null
+shader_parameter/border_middle_hori_threshold = null
+shader_parameter/border_middle_vert_threshold = null
+shader_parameter/border_inner_hori_threshold = null
+shader_parameter/border_inner_vert_threshold = null
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_r0pr2"]
+shader = ExtResource("3_vkk8r")
 shader_parameter/top_left = null
 shader_parameter/top_right = null
 shader_parameter/bottom_left = null
@@ -34,7 +49,7 @@ bg_color = Color(0.356863, 0.698039, 0, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aouop"]
 bg_color = Color(0.184314, 0.611765, 1, 1)
 
-[sub_resource type="Shader" id="Shader_coj4y"]
+[sub_resource type="Shader" id="Shader_omx0r"]
 resource_local_to_scene = true
 code = "shader_type canvas_item;
 
@@ -99,7 +114,7 @@ void fragment() {
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_tejnm"]
 resource_local_to_scene = true
-shader = SubResource("Shader_coj4y")
+shader = SubResource("Shader_omx0r")
 shader_parameter/top_left = null
 shader_parameter/top_right = null
 shader_parameter/bottom_left = null
@@ -129,7 +144,7 @@ render_target_update_mode = 4
 [node name="Saving" type="Node" parent="ChatterGameSubViewport"]
 script = ExtResource("1_ndh0t")
 
-[node name="GameScene" parent="ChatterGameSubViewport" instance=ExtResource("2_1ym6s")]
+[node name="SecondLevel" parent="ChatterGameSubViewport" instance=ExtResource("2_esr46")]
 
 [node name="GameUI" type="CanvasLayer" parent="ChatterGameSubViewport"]
 
@@ -142,7 +157,7 @@ grow_horizontal = 2
 [node name="FightingPanel" type="Panel" parent="ChatterGameSubViewport/GameUI/VBoxContainer"]
 visible = false
 material = SubResource("ShaderMaterial_8danx")
-custom_minimum_size = Vector2(0, 150)
+custom_minimum_size = Vector2(0, 175)
 layout_mode = 2
 script = ExtResource("3_q3si6")
 
@@ -159,29 +174,89 @@ theme_override_constants/margin_bottom = 20
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Attacks" type="Label" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer"]
+[node name="AttackPanel" type="Panel" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer"]
+material = SubResource("ShaderMaterial_r0pr2")
+custom_minimum_size = Vector2(200, 140)
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "!Slice
-!Shove
-!Impale
+script = ExtResource("5_b03td")
+
+[node name="Attacks" type="Label" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/AttackPanel"]
+layout_mode = 2
+offset_left = 20.0
+offset_right = 127.0
+offset_bottom = 141.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 2
+theme_override_constants/shadow_outline_size = 2
+theme_override_font_sizes/font_size = 32
+text = "Slice
+Shove
+Impale
 "
 
-[node name="Magic" type="Label" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer"]
+[node name="MagicPanel" type="Panel" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer"]
+material = SubResource("ShaderMaterial_r0pr2")
+custom_minimum_size = Vector2(200, 140)
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "!Fire
-!Ice
-!Thunder
+script = ExtResource("5_b03td")
+
+[node name="Magic" type="Label" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/MagicPanel"]
+layout_mode = 2
+offset_left = 20.0
+offset_right = 150.0
+offset_bottom = 141.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 2
+theme_override_constants/shadow_outline_size = 2
+theme_override_font_sizes/font_size = 32
+text = "Fire
+Ice
+Thunder
 "
 
-[node name="Misc" type="Label" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer"]
+[node name="MiscPanel" type="Panel" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer"]
+material = SubResource("ShaderMaterial_r0pr2")
+custom_minimum_size = Vector2(250, 140)
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "!Item <Name>
-!Defend
-!Run
+script = ExtResource("5_b03td")
+
+[node name="Misc" type="Label" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/MiscPanel"]
+layout_mode = 2
+offset_left = 20.0
+offset_right = 229.0
+offset_bottom = 141.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 2
+theme_override_constants/shadow_outline_size = 2
+theme_override_font_sizes/font_size = 32
+text = "Item <Name>
+Defend
+Run
 "
+
+[node name="StatLabels" type="VBoxContainer" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Experience" type="Label" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/StatLabels"]
+layout_mode = 2
+text = "Exp:"
+
+[node name="Health" type="Label" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/StatLabels"]
+layout_mode = 2
+text = "Health:"
+
+[node name="Mana" type="Label" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/StatLabels"]
+layout_mode = 2
+text = "Mana:"
 
 [node name="Stats" type="VBoxContainer" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -215,12 +290,18 @@ layout_mode = 2
 [node name="TextureRect" type="TextureRect" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/Debuffs/HBoxContainer"]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
-texture = ExtResource("5_byp4e")
+texture = ExtResource("5_rsx2f")
 expand_mode = 1
 
 [node name="BleedCounter" type="Label" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/Debuffs/HBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 2
+theme_override_constants/shadow_outline_size = 2
+theme_override_font_sizes/font_size = 32
 text = "0"
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/Debuffs"]
@@ -229,12 +310,38 @@ layout_mode = 2
 [node name="TextureRect" type="TextureRect" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/Debuffs/HBoxContainer2"]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
-texture = ExtResource("6_t1i7p")
+texture = ExtResource("6_xdkfw")
 expand_mode = 1
 
 [node name="BurnCounter" type="Label" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/Debuffs/HBoxContainer2"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 2
+theme_override_constants/shadow_outline_size = 2
+theme_override_font_sizes/font_size = 32
+text = "0"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/Debuffs"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/Debuffs/HBoxContainer3"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("8_46ekp")
+expand_mode = 1
+
+[node name="FrostbiteCounter" type="Label" parent="ChatterGameSubViewport/GameUI/VBoxContainer/FightingPanel/MarginContainer/HBoxContainer/Debuffs/HBoxContainer3"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 2
+theme_override_constants/shadow_outline_size = 2
+theme_override_font_sizes/font_size = 32
 text = "0"
 
 [node name="Control" type="Control" parent="ChatterGameSubViewport/GameUI/VBoxContainer"]

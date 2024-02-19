@@ -59,8 +59,7 @@ func generate_options_and_labels(options : Array):
 		var button = Button.new()
 		optionsContainer.add_child(button)
 		button.flat = true
-		button.custom_minimum_size = Vector2(125, 30)
-		button.add_theme_constant_override("font_size", 20)
+		button.custom_minimum_size = Vector2(150, 50)
 		button.pressed.connect(on_option_selected.bind(option["callback"])) 
 		
 		# Create a new Label node as a child of the Button node
@@ -77,8 +76,9 @@ func generate_options_and_labels(options : Array):
 		label.add_theme_constant_override("shadow_offset_y", 1)
 		label.add_theme_constant_override("outline_size", 2)
 		label.add_theme_constant_override("shadow_outline_size", 2)
+		label.add_theme_font_size_override("font_size", 32)
 
-	var option_size = Vector2(125, 30)
+	var option_size = Vector2(150, 50)
 	var margin = Vector2(15, 15)  # Margin size
 	var container_min_size = option_size * Vector2(1, options.size()) + 2 * margin
 	%OptionPanel.custom_minimum_size = container_min_size

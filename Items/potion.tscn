@@ -1,11 +1,11 @@
 [gd_scene load_steps=8 format=3 uid="uid://c4j2b6bso4f0g"]
 
-[ext_resource type="PackedScene" uid="uid://b06v533p7elry" path="res://Items/collectable.tscn" id="1_kn2lb"]
-[ext_resource type="Script" path="res://Items/Potion.gd" id="2_c7gv1"]
-[ext_resource type="Texture2D" uid="uid://cqsnvaong5u2n" path="res://Assets/potion.png" id="3_cdp8r"]
-[ext_resource type="Texture2D" uid="uid://ddal2l1bvas3f" path="res://Assets/potion2.png" id="4_mnfwx"]
-[ext_resource type="Texture2D" uid="uid://dsberpvg0bibu" path="res://Assets/potion3.png" id="5_gafm8"]
-[ext_resource type="Texture2D" uid="uid://bqjewns17bsj1" path="res://Assets/potion4.png" id="6_5jtqu"]
+[ext_resource type="PackedScene" uid="uid://b06v533p7elry" path="res://items/collectable.tscn" id="1_kn2lb"]
+[ext_resource type="Script" path="res://items/potion.gd" id="2_c7gv1"]
+[ext_resource type="Texture2D" uid="uid://cqsnvaong5u2n" path="res://assets/potion.png" id="3_cdp8r"]
+[ext_resource type="Texture2D" uid="uid://ddal2l1bvas3f" path="res://assets/potion2.png" id="4_mnfwx"]
+[ext_resource type="Texture2D" uid="uid://dsberpvg0bibu" path="res://assets/potion3.png" id="5_gafm8"]
+[ext_resource type="Texture2D" uid="uid://bqjewns17bsj1" path="res://assets/potion4.png" id="6_5jtqu"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_gcuhu"]
 animations = [{

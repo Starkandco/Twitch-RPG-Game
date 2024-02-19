@@ -1,8 +1,8 @@
 extends Node
 
 func save_nodes():
-	var nodes = get_tree().get_nodes_in_group("Persist")
-	for node in nodes:
+	var players = get_parent().get_child(1).get_node("Players").get_children()
+	for node in players:
 		var save_game = FileAccess.open("res://data/"+node.user+".save", FileAccess.WRITE)
 		if node.scene_file_path.is_empty():
 			print("persistent node '%s' is not an instanced scene, skipped" % node.name)
@@ -15,6 +15,24 @@ func save_nodes():
 		var node_data = node._return_dict_for_save()
 		var json_string = JSON.stringify(node_data)
 		save_game.store_line(json_string)
+
+func save_player(user):
+	var players = get_parent().get_child(1).get_node("Players").get_children()
+	for node in players:
+		if node.user != user: continue
+		var save_game = FileAccess.open("res://data/"+node.user+".save", FileAccess.WRITE)
+		if node.scene_file_path.is_empty():
+			print("persistent node '%s' is not an instanced scene, skipped" % node.name)
+			continue
+			
+		if !node.has_method("_return_dict_for_save"):
+			print("persistent node '%s' is missing a return_dict_for_save() function, skipped" % node.name)
+			continue
+		
+		var node_data = node._return_dict_for_save()
+		var json_string = JSON.stringify(node_data)
+		save_game.store_line(json_string)
+		return
 
 func load_game(user):
 	if not FileAccess.file_exists("res://data/"+user+".save"):

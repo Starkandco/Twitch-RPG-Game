@@ -1,0 +1,41 @@
+[gd_scene load_steps=8 format=3 uid="uid://6241paudh75r"]
+
+[ext_resource type="PackedScene" uid="uid://b06v533p7elry" path="res://items/collectable.tscn" id="1_k7i7a"]
+[ext_resource type="Script" path="res://items/elixir.gd" id="2_kdp5r"]
+[ext_resource type="Texture2D" uid="uid://c51x50scrhppo" path="res://assets/elixir.png" id="3_ndknd"]
+[ext_resource type="Texture2D" uid="uid://culm3hdbswx65" path="res://assets/elixir2.png" id="4_sbxmp"]
+[ext_resource type="Texture2D" uid="uid://840858ndu6nf" path="res://assets/elixir3.png" id="5_0o6ab"]
+[ext_resource type="Texture2D" uid="uid://u3r053btoyt" path="res://assets/elixir4.png" id="6_wv6bi"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_xppdq"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_ndknd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_ndknd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_ndknd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_sbxmp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_0o6ab")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_wv6bi")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Elixir" instance=ExtResource("1_k7i7a")]
+script = ExtResource("2_kdp5r")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." index="1"]
+sprite_frames = SubResource("SpriteFrames_xppdq")
+autoplay = "default"
